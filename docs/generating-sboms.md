@@ -25,6 +25,10 @@ details (Go license assertion, Python `uv` flow, author stamping).
 | `python-service.cdx.json`| CycloneDX | Python application |
 | `container-os.spdx.json` | SPDX      | Container OS packages |
 
+After the SBOMs are generated, the script renders them into per-artifact HTML
+reports under `./sbom-outputs/html/` (with an `index.html` roll-up). See
+[rendering-html.md](rendering-html.md). Set `SKIP_RENDER=1` to skip this step.
+
 ## Configuration
 
 All settings are environment variables with sensible defaults.
@@ -35,6 +39,9 @@ All settings are environment variables with sensible defaults.
 | `OUTPUT_DIR` | `./sbom-outputs` | where artifacts are written |
 | `SBOM_AUTHOR` | `SBOM PoC Team` | document author stamped into each CycloneDX BOM |
 | `SKIP_BUILD` | `0` | set to `1` to reuse an existing image and skip `docker build` |
+| `SKIP_RENDER` | `0` | set to `1` to skip the HTML rendering step |
+| `SBOM_UTILITY_VERSION` | `v0.19.1` | `sbom-utility` version (CycloneDX inventory/license extraction for HTML) |
+| `SBOM_UTILITY_IMAGE` / `PYTHON_RENDER_IMAGE` | `GO_IMAGE` / `PYTHON_IMAGE` | toolchain images for the two HTML rendering stages |
 | `NODE_IMAGE` / `GO_IMAGE` / `MAVEN_IMAGE` / `PYTHON_IMAGE` / `SYFT_IMAGE` | see [prerequisites.md](prerequisites.md#pinned-tool-versions) | override any toolchain image (e.g. point at an internal mirror) |
 | `CYCLONEDX_NPM_VERSION` / `CYCLONEDX_GOMOD_VERSION` / `CYCLONEDX_PY_VERSION` | see [prerequisites.md](prerequisites.md#pinned-tool-versions) | override a generator version |
 

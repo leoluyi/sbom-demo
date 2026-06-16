@@ -32,6 +32,8 @@ OUTPUT_DIR="${OUTPUT_DIR:-${SCRIPT_DIR}/sbom-outputs}"
 IMAGE_NAME="${IMAGE_NAME:-poc-app:sbom-demo}"
 SBOM_AUTHOR="${SBOM_AUTHOR:-SBOM PoC Team}"
 SKIP_BUILD="${SKIP_BUILD:-0}"
+# Set to 1 to skip the HTML rendering step (SBOM JSON is still produced).
+SKIP_RENDER="${SKIP_RENDER:-0}"
 
 # Base images carrying each language toolchain (pinned for reproducibility).
 NODE_IMAGE="${NODE_IMAGE:-node:20-alpine}"
@@ -39,6 +41,12 @@ GO_IMAGE="${GO_IMAGE:-golang:1.26-alpine}"
 MAVEN_IMAGE="${MAVEN_IMAGE:-maven:3.9-eclipse-temurin-21}"
 PYTHON_IMAGE="${PYTHON_IMAGE:-ghcr.io/astral-sh/uv:python3.12-alpine}"
 SYFT_IMAGE="${SYFT_IMAGE:-anchore/syft:v1.18.1}"
+
+# HTML rendering: sbom-utility (CycloneDX inventory/licenses) is go-installed in a Go
+# toolchain image; the renderer runs under the uv image so it can resolve spdx-tools.
+SBOM_UTILITY_IMAGE="${SBOM_UTILITY_IMAGE:-${GO_IMAGE}}"
+SBOM_UTILITY_VERSION="${SBOM_UTILITY_VERSION:-v0.19.1}"
+PYTHON_RENDER_IMAGE="${PYTHON_RENDER_IMAGE:-${PYTHON_IMAGE}}"
 
 # Generator versions (the Maven plugin version is pinned in poc-app/java-service/pom.xml).
 CYCLONEDX_NPM_VERSION="${CYCLONEDX_NPM_VERSION:-1.19.3}"
@@ -51,6 +59,9 @@ GO_SBOM="${OUTPUT_DIR}/go-service.cdx.json"
 JAVA_SBOM="${OUTPUT_DIR}/java-service.cdx.json"
 PYTHON_SBOM="${OUTPUT_DIR}/python-service.cdx.json"
 OS_SBOM="${OUTPUT_DIR}/container-os.spdx.json"
+
+HTML_DIR="${OUTPUT_DIR}/html"
+RENDER_TMP="${OUTPUT_DIR}/.render-tmp"
 
 # --- logging helpers ---------------------------------------------------------
 log()  { printf '\033[1;34m[sbom]\033[0m %s\n' "$*"; }
@@ -196,6 +207,40 @@ generate_os_sbom() {
   log "wrote ${OS_SBOM}"
 }
 
+# --- HTML reports ------------------------------------------------------------
+# Two stages: sbom-utility extracts CycloneDX inventory/license data as CSV/JSON,
+# then render-sbom.py (under uv, so spdx-tools resolves) turns every artifact -
+# including the SPDX OS layer - into a per-artifact HTML report plus an index.
+render_html() {
+  if [ "${SKIP_RENDER}" = "1" ]; then
+    log "SKIP_RENDER=1; skipping HTML rendering"
+    return
+  fi
+  mkdir -p "${HTML_DIR}" "${RENDER_TMP}"
+  STAGES+=("${RENDER_TMP}")
+
+  log "HTML stage 1/2 -> sbom-utility (CycloneDX inventory + licenses)"
+  docker run --rm -i -e VER="${SBOM_UTILITY_VERSION}" -v "${OUTPUT_DIR}:/out" -w /out \
+    "${SBOM_UTILITY_IMAGE}" sh -s <<'EOSH' || die "sbom-utility extraction failed"
+set -e
+apk add --no-cache git >/dev/null 2>&1
+go install "github.com/CycloneDX/sbom-utility@${VER}" >/dev/null 2>&1
+SU="$(go env GOPATH)/bin/sbom-utility"
+for f in /out/*.cdx.json; do
+  base="$(basename "${f}" .cdx.json)"
+  "${SU}" component list -i "${f}" --format csv -q > "/out/.render-tmp/${base}.components.csv"
+  "${SU}" license list -i "${f}" --summary --format json -q > "/out/.render-tmp/${base}.licenses.json"
+done
+EOSH
+
+  log "HTML stage 2/2 -> render-sbom.py (CycloneDX + SPDX -> HTML)"
+  docker run --rm -v "${SCRIPT_DIR}:/app" -v "${OUTPUT_DIR}:/out" -w /app \
+    "${PYTHON_RENDER_IMAGE}" \
+    uv run render-sbom.py --input-dir /out --util-dir /out/.render-tmp --output-dir /out/html \
+    || die "render-sbom.py failed"
+  log "wrote HTML reports to ${HTML_DIR}"
+}
+
 main() {
   preflight
   build_image
@@ -204,6 +249,7 @@ main() {
   generate_java_sbom
   generate_python_sbom
   generate_os_sbom
+  render_html
   log "done. artifacts:"
   ls -1 "${OUTPUT_DIR}"
 }

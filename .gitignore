@@ -1,0 +1,6 @@
+# Python bytecode cache
+__pycache__/
+*.pyc
+
+# Transient sbom-utility extraction staged during HTML rendering
+sbom-outputs/.render-tmp/

@@ -25,3 +25,5 @@ overridable via an environment variable (see
 | `maven:3.9-eclipse-temurin-21` + `cyclonedx-maven-plugin` | `2.9.1` (pinned in `pom.xml`) |
 | `ghcr.io/astral-sh/uv:python3.12-alpine` + `cyclonedx-bom` | `7.3.0` |
 | `anchore/syft` | `v1.18.1` |
+| `golang:1.26-alpine` + `sbom-utility` (HTML rendering) | `v0.19.1` |
+| `spdx-tools` (SPDX parsing for HTML, via `uv`) | `>=0.8` |

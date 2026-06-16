@@ -34,9 +34,15 @@ needed — generators run in containers). See
 [docs/prerequisites.md](docs/prerequisites.md).
 
 ```bash
-./generate-sbom.sh        # generate all SBOMs into ./sbom-outputs/
+./generate-sbom.sh        # generate all SBOMs + render HTML reports into ./sbom-outputs/
 uv run validate-sbom.py   # validate compliance fields, exits 0/1
+uv run render-sbom.py     # (re)render HTML reports into ./sbom-outputs/html/
 ```
+
+`generate-sbom.sh` renders per-artifact HTML reports (plus an `index.html`) into
+`./sbom-outputs/html/` as its final step — CycloneDX inventory/licenses via
+`sbom-utility`, the SPDX OS layer via `spdx-tools`. See
+[docs/rendering-html.md](docs/rendering-html.md).
 
 ## Results
 
@@ -83,4 +89,5 @@ compliance fields checked: **Author, Component Name, Version, License**.
 | [docs/architecture.md](docs/architecture.md) | Multi-layer approach, project layout, container image |
 | [docs/generating-sboms.md](docs/generating-sboms.md) | Running `generate-sbom.sh`, outputs, configuration |
 | [docs/validating-sboms.md](docs/validating-sboms.md) | Running `validate-sbom.py`, reading the report, severity model |
+| [docs/rendering-html.md](docs/rendering-html.md) | Rendering HTML reports with `render-sbom.py` (sbom-utility + spdx-tools) |
 | [docs/implementation-notes.md](docs/implementation-notes.md) | Author stamping, Go license assertion, Python `uv`/PEP 639 |
