@@ -1,5 +1,12 @@
 **/node_modules
 **/.git
+**/target
+**/__pycache__
+**/.venv
+# Java and Python services are application-level SBOM targets, not part of the
+# Node+Go runtime image; keep them out of the build context.
+java-service
+python-service
 sbom-outputs
 *.tar
 Dockerfile

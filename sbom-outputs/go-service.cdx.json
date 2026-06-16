@@ -1,1 +1,128 @@
-{"bomFormat":"CycloneDX","specVersion":"1.6","serialNumber":"urn:uuid:759a068e-0920-4923-be29-7d6e71fdeac5","version":1,"metadata":{"timestamp":"2026-06-16T15:17:51Z","tools":{"components":[{"group":"@cyclonedx","name":"cdxgen","version":"11.7.0","purl":"pkg:npm/%40cyclonedx/cdxgen@11.7.0","type":"application","bom-ref":"pkg:npm/@cyclonedx/cdxgen@11.7.0","publisher":"OWASP Foundation","authors":[{"name":"OWASP Foundation"}]}]},"authors":[{"name":"SBOM PoC Team"}],"lifecycles":[{"phase":"build"}],"component":{"name":"github.com/poc-app/microservice","type":"application","purl":"pkg:golang/github.com/poc-app/microservice","bom-ref":"pkg:golang/github.com/poc-app/microservice"},"properties":[{"name":"cdx:bom:componentTypes","value":"golang"},{"name":"cdx:bom:componentNamespaces","value":"github.com/google"},{"name":"cdx:bom:componentSrcFiles","value":"go.mod"}]},"components":[{"group":"","name":"github.com/google/uuid","version":"v1.6.0","scope":"required","hashes":[{"alg":"SHA-256","content":"4c8c8f65ee0c82abdf7980c115e74ca061a9130fcba8e79a393fa787153ec87a"}],"purl":"pkg:golang/github.com/google/uuid@v1.6.0","type":"library","bom-ref":"pkg:golang/github.com/google/uuid@v1.6.0","properties":[{"name":"SrcFile","value":"go.mod"}],"evidence":{"identity":[{"field":"purl","confidence":0.7,"methods":[{"technique":"manifest-analysis","confidence":0.7,"value":"go.mod"}],"concludedValue":"go.mod"}]}}],"dependencies":[{"ref":"pkg:golang/github.com/google/uuid@v1.6.0","dependsOn":[]},{"ref":"pkg:golang/github.com/poc-app/microservice","dependsOn":["pkg:golang/github.com/google/uuid@v1.6.0"]}],"annotations":[{"bom-ref":"metadata-annotations","subjects":["pkg:golang/github.com/poc-app/microservice"],"annotator":{"component":{"group":"@cyclonedx","name":"cdxgen","version":"11.7.0","purl":"pkg:npm/%40cyclonedx/cdxgen@11.7.0","type":"application","bom-ref":"pkg:npm/@cyclonedx/cdxgen@11.7.0","publisher":"OWASP Foundation","authors":[{"name":"OWASP Foundation"}]}},"timestamp":"2026-06-16T15:17:51Z","text":"This Software Bill-of-Materials (SBOM) document was created on Tuesday, June 16, 2026 with cdxgen. The data was captured during the build lifecycle phase. The document describes an application named 'github.com/poc-app/microservice'. There are 1 components. The package type in this SBOM is golang with a single purl namespace 'github.com/google' described under components. The components were identified from the source files: go.mod."}]}
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:ee4e75c8-15d8-413b-bb70-6f7e9dcf5c89",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-16T15:51:29Z",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-gomod",
+        "version": "v1.9.0",
+        "hashes": [
+          {
+            "alg": "MD5",
+            "content": "21bb4b9ed8993ddf08e37d645ede9a37"
+          },
+          {
+            "alg": "SHA-1",
+            "content": "60c1748bd5efc2fd83b28fc4c9bc62749b044a66"
+          },
+          {
+            "alg": "SHA-256",
+            "content": "10531881de15d012420b6fbe42de9301cf4932cb7fc28e34b3435a85375e255b"
+          },
+          {
+            "alg": "SHA-384",
+            "content": "8bccb44dc7101c1fbb99733640f6df44a90f0aefd1e722521135e9c5ef2ea25cfe04006b5835eb7c63016335db1dbf88"
+          },
+          {
+            "alg": "SHA-512",
+            "content": "af34e2186d6b1a2d712a5c8d77ef2b50f7952192aad3ee6b1c426496114a68aacabec56bcbcae9beb9f9911b42420c100dc31e3633123511cec6c89c83b572c9"
+          }
+        ],
+        "externalReferences": [
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-gomod",
+            "type": "vcs"
+          },
+          {
+            "url": "https://cyclonedx.org",
+            "type": "website"
+          }
+        ]
+      }
+    ],
+    "component": {
+      "bom-ref": "pkg:golang/github.com/poc-app/microservice@v0.0.0?type=module",
+      "type": "application",
+      "name": "github.com/poc-app/microservice",
+      "version": "v0.0.0",
+      "purl": "pkg:golang/github.com/poc-app/microservice@v0.0.0?type=module&goos=linux&goarch=arm64",
+      "externalReferences": [
+        {
+          "url": "https://github.com/poc-app/microservice",
+          "type": "vcs"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:gomod:build:env:CGO_ENABLED",
+          "value": "0"
+        },
+        {
+          "name": "cdx:gomod:build:env:GOARCH",
+          "value": "arm64"
+        },
+        {
+          "name": "cdx:gomod:build:env:GOOS",
+          "value": "linux"
+        },
+        {
+          "name": "cdx:gomod:build:env:GOVERSION",
+          "value": "go1.26.4"
+        }
+      ]
+    },
+    "authors": [
+      {
+        "name": "SBOM PoC Team"
+      }
+    ],
+    "supplier": {
+      "name": "SBOM PoC Team"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:golang/github.com/google/uuid@v1.6.0?type=module",
+      "type": "library",
+      "name": "github.com/google/uuid",
+      "version": "v1.6.0",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "348bda24330eb231c0f27d630212d2833ac0cf2d4782bfa136b6f9edefbde05d"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:golang/github.com/google/uuid@v1.6.0?type=module&goos=linux&goarch=arm64",
+      "externalReferences": [
+        {
+          "url": "https://github.com/google/uuid",
+          "type": "vcs"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:golang/github.com/poc-app/microservice@v0.0.0?type=module",
+      "dependsOn": [
+        "pkg:golang/github.com/google/uuid@v1.6.0?type=module"
+      ]
+    },
+    {
+      "ref": "pkg:golang/github.com/google/uuid@v1.6.0?type=module"
+    }
+  ]
+}

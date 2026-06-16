@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
 """Validate generated SBOM artifacts for basic regulatory compliance.
 
 For each SBOM it verifies the presence of the mandatory fields commonly
@@ -16,7 +20,7 @@ inventory (CycloneDX, produced by cdxgen).
 Pure standard library; no network access; reads only local JSON files.
 
 Usage:
-    python3 validate-sbom.py [sbom-file ...]
+    uv run validate-sbom.py [sbom-file ...]
 
 With no arguments it scans ./sbom-outputs for *.cdx.json and *.spdx.json.
 Exit code is non-zero when any hard requirement (author, or per-component
@@ -57,8 +61,7 @@ def load_json(path: Path) -> dict:
         return json.load(fh)
 
 
-def has_cyclonedx_license(component: dict) -> bool:
-    licenses = component.get("licenses")
+def _license_list_has_data(licenses) -> bool:
     if not isinstance(licenses, list) or not licenses:
         return False
     for entry in licenses:
@@ -69,6 +72,18 @@ def has_cyclonedx_license(component: dict) -> bool:
         lic = entry.get("license")
         if isinstance(lic, dict) and (lic.get("id") or lic.get("name")):
             return True
+    return False
+
+
+def has_cyclonedx_license(component: dict) -> bool:
+    # A license counts whether it is asserted on the component or only carried as
+    # tool-detected evidence (component.evidence.licenses), since both identify
+    # the license for compliance purposes.
+    if _license_list_has_data(component.get("licenses")):
+        return True
+    evidence = component.get("evidence")
+    if isinstance(evidence, dict) and _license_list_has_data(evidence.get("licenses")):
+        return True
     return False
 
 
