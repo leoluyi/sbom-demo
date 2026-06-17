@@ -27,7 +27,8 @@ operating-system layers and validated for regulatory compliance.
 | 1 | **Multi-language mock project** — Node.js, Go, Java, Python + a multi-stage container image | Met | [docs/architecture.md](docs/architecture.md) |
 | 2 | **On-prem, multi-layer SBOM generation** — per-language CycloneDX (app) + syft SPDX (OS), no external API | Met | 5 artifacts, see [Results](#results) |
 | 3 | **Compliance validation & extraction** — verify Author / Name / Version / License; count deps per layer | Met | all PASS, see [Results](#results) |
-| 4 | **Documentation** — how to run, prerequisites, reading the logs | Met | [docs/](docs/) |
+| 4 | **Air-gapped SBOM generation & license extraction** — all license data derived from local package metadata (package.json / POM / METADATA / image filesystem), no external license API required; packages obtained via local registry mirrors | Met | App layer 100% coverage; OS layer 293/297 `licenseDeclared` (4 missing are app binaries, not third-party deps) |
+| 5 | **Documentation** — how to run, prerequisites, reading the logs | Met | [docs/](docs/) |
 
 ## Quickstart
 
