@@ -22,6 +22,16 @@ COPY backend/package.json backend/package-lock.json ./
 RUN npm ci --omit=dev --no-audit --no-fund
 
 # ---------------------------------------------------------------------------
+# Stage 3: build the Next.js frontend (standalone output)
+# ---------------------------------------------------------------------------
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/ ./
+RUN npm run build
+
+# ---------------------------------------------------------------------------
 # Final stage: Alpine + Node runtime carrying BOTH workloads
 #   - Alpine gives syft a real OS package layer (apk/musl) to inventory.
 #   - The Go binary and the Node app live side by side for the demo.
@@ -39,8 +49,12 @@ COPY --from=go-builder /out/microservice /usr/local/bin/microservice
 COPY --from=node-deps /app/backend/node_modules ./backend/node_modules
 COPY backend/package.json backend/index.js ./backend/
 
+# Next.js frontend (standalone server + pre-rendered static assets).
+COPY --from=frontend-builder /app/frontend/.next/standalone ./frontend/
+COPY --from=frontend-builder /app/frontend/.next/static ./frontend/.next/static
+
 USER node
-EXPOSE 3000 8080
+EXPOSE 3000 3001 8080
 
 # The Node backend is the container entrypoint for this PoC; the Go binary
 # is present on PATH and can be launched on demand (or via a process manager).
