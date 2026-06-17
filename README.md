@@ -1,5 +1,7 @@
 # Multi-Layer SBOM Generation PoC
 
+> **[Live Demo (GitHub Pages)](https://leoluyi.github.io/sbom-demo/)**
+
 A self-contained, on-premises proof of concept for **automated, multi-layer
 Software Bill of Materials (SBOM) generation**. Each application language is
 inventoried with its **official CycloneDX language-specific generator**, and the

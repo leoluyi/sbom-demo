@@ -33,7 +33,16 @@ td.purl { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12p
 .msg.fail { background:#fbe9e7; color:var(--fail); }
 .note { background:#eef4fb; color:var(--accent); padding:10px 14px; border-radius:8px; margin:10px 0; }
 .muted { color:var(--muted); }
-footer { margin-top:40px; color:var(--muted); font-size:12px; }</style>
+footer { margin-top:40px; color:var(--muted); font-size:12px; }
+.datatable-wrapper .datatable-top,
+.datatable-wrapper .datatable-bottom { padding:8px 0; font-size:13px; color:var(--muted); }
+.datatable-wrapper .datatable-search input { padding:6px 10px; border:1px solid var(--line);
+  border-radius:6px; font-size:13.5px; font-family:inherit; outline:none; }
+.datatable-wrapper .datatable-search input:focus { border-color:var(--accent); }
+.datatable-wrapper .datatable-selector { padding:4px 8px; border:1px solid var(--line);
+  border-radius:6px; font-size:13px; font-family:inherit; }
+.datatable-wrapper .datatable-info { font-size:13px; }</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@9/dist/style.min.css">
 </head><body>
 <div class="wrap">
 <h1>java-service</h1>
@@ -41,9 +50,23 @@ footer { margin-top:40px; color:var(--muted); font-size:12px; }</style>
 <h2>摘要 Summary</h2>
 <div class="cards"><div class="card"><div class="k">格式規格 Format</div><div class="v">CycloneDX 1.6</div></div><div class="card"><div class="k">套件元件總數 Components</div><div class="v">8</div></div><div class="card"><div class="k">不重複授權條款 Distinct licenses</div><div class="v">2</div></div><div class="card"><div class="k">授權涵蓋率 License coverage</div><div class="v">100%</div></div><div class="card"><div class="k">合規狀態 Status</div><div class="v"><span class="badge pass">PASS</span></div></div></div>
 <h2>Validation 摘要</h2><p>合規檢查 (validate-sbom.py / NTIA): <span class="badge pass">PASS</span></p><table><tr><th>項目 Field</th><th>結果 Result</th></tr><tr><td>文件作者 Author</td><td>SBOM PoC Team</td></tr><tr><td>元件數 Components (top-level)</td><td>8</td></tr><tr><td>具名稱 With name</td><td>8/8</td></tr><tr><td>具版本 With version</td><td>8/8</td></tr><tr><td>具授權 With license</td><td>8/8 (100%)</td></tr></table>
-<h2>Components 清單 (8)</h2><table><tr><th>名稱 Name</th><th>類型 Type</th><th>版本 Version</th><th>授權 License</th><th>供應商/發布者 Publisher</th><th>PURL</th></tr><tr><td>jsr305</td><td>library</td><td>3.0.2</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.code.findbugs/jsr305@3.0.2?type=jar</td></tr><tr><td>error_prone_annotations</td><td>library</td><td>2.26.1</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.errorprone/error_prone_annotations@2.26.1?type=jar</td></tr><tr><td>failureaccess</td><td>library</td><td>1.0.2</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.guava/failureaccess@1.0.2?type=jar</td></tr><tr><td>guava</td><td>library</td><td>33.2.1-jre</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.guava/guava@33.2.1-jre?type=jar</td></tr><tr><td>listenablefuture</td><td>library</td><td>9999.0-empty-to-avoid-conflict-with-guava</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava?type=jar</td></tr><tr><td>j2objc-annotations</td><td>library</td><td>3.0.0</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.j2objc/j2objc-annotations@3.0.0?type=jar</td></tr><tr><td>checker-qual</td><td>library</td><td>3.42.0</td><td>MIT</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/org.checkerframework/checker-qual@3.42.0?type=jar</td></tr><tr><td>slf4j-api</td><td>library</td><td>2.0.13</td><td>MIT</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/org.slf4j/slf4j-api@2.0.13?type=jar</td></tr></table>
-<h2>Licenses 清單 (2)</h2><table><tr><th>授權條款 License</th><th>元件數 Components</th><th>使用政策 Usage policy</th></tr><tr><td>Apache-2.0</td><td>6</td><td>allow</td></tr><tr><td>MIT</td><td>2</td><td>allow</td></tr></table>
+<h2>Components 清單 (8)</h2><table data-datatable><thead><tr><th>名稱 Name</th><th>類型 Type</th><th>版本 Version</th><th>授權 License</th><th>供應商/發布者 Publisher</th><th>PURL</th></tr></thead><tbody><tr><td>jsr305</td><td>library</td><td>3.0.2</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.code.findbugs/jsr305@3.0.2?type=jar</td></tr><tr><td>error_prone_annotations</td><td>library</td><td>2.26.1</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.errorprone/error_prone_annotations@2.26.1?type=jar</td></tr><tr><td>failureaccess</td><td>library</td><td>1.0.2</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.guava/failureaccess@1.0.2?type=jar</td></tr><tr><td>guava</td><td>library</td><td>33.2.1-jre</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.guava/guava@33.2.1-jre?type=jar</td></tr><tr><td>listenablefuture</td><td>library</td><td>9999.0-empty-to-avoid-conflict-with-guava</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava?type=jar</td></tr><tr><td>j2objc-annotations</td><td>library</td><td>3.0.0</td><td>Apache-2.0</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/com.google.j2objc/j2objc-annotations@3.0.0?type=jar</td></tr><tr><td>checker-qual</td><td>library</td><td>3.42.0</td><td>MIT</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/org.checkerframework/checker-qual@3.42.0?type=jar</td></tr><tr><td>slf4j-api</td><td>library</td><td>2.0.13</td><td>MIT</td><td><span class="muted">—</span></td><td class="purl">pkg:maven/org.slf4j/slf4j-api@2.0.13?type=jar</td></tr></tbody></table>
+<h2>Licenses 清單 (2)</h2><table data-datatable><thead><tr><th>授權條款 License</th><th>元件數 Components</th><th>使用政策 Usage policy</th></tr></thead><tbody><tr><td>Apache-2.0</td><td>6</td><td>allow</td></tr><tr><td>MIT</td><td>2</td><td>allow</td></tr></tbody></table>
 <h2>Resources 清單</h2><table><tr><th>資源類型 Resource type</th><th>數量 Count</th></tr><tr><td>library</td><td>8</td></tr></table>
 <footer>Generated by render-sbom.py · CycloneDX via sbom-utility · SPDX via spdx-tools · compliance via validate-sbom.py</footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@9"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[data-datatable]').forEach(function(el) {
+    var rows = el.tBodies[0] ? el.tBodies[0].rows.length : 0;
+    new simpleDatatables.DataTable(el, {
+      searchable: rows > 15,
+      paging: rows > 15,
+      perPage: 25,
+      perPageSelect: rows > 15 ? [10, 25, 50, 100] : false
+    });
+  });
+});
+</script>
 </body></html>
