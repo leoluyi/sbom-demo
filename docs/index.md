@@ -2,6 +2,7 @@
 
 | Document | Contents |
 |----------|----------|
+| [sbom-principles.md](sbom-principles.md) | SBOM 產生原理、兩層掃描架構、Repo 掃描要件 |
 | [prerequisites.md](prerequisites.md) | Host requirements and pinned tool versions |
 | [architecture.md](architecture.md) | Multi-layer approach, project layout, container image |
 | [generating-sboms.md](generating-sboms.md) | Running `generate-sbom.sh`, outputs, configuration |

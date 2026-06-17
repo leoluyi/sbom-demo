@@ -145,6 +145,7 @@ compliance fields checked: **Author, Component Name, Version, License**.
 
 | Document | Contents |
 |----------|----------|
+| [docs/sbom-principles.md](docs/sbom-principles.md) | SBOM 產生原理、兩層掃描架構、Repo 掃描要件 |
 | [docs/prerequisites.md](docs/prerequisites.md) | Host requirements and pinned tool versions |
 | [docs/architecture.md](docs/architecture.md) | Multi-layer approach, project layout, container image |
 | [docs/generating-sboms.md](docs/generating-sboms.md) | Running `generate-sbom.sh`, outputs, configuration |
