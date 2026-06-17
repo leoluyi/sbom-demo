@@ -1,6 +1,6 @@
 # Multi-Layer SBOM Generation PoC
 
-> **[Live Demo (GitHub Pages)](https://leoluyi.github.io/sbom-demo/)**
+> **[Interactive SBOM Reports (GitHub Pages)](https://leoluyi.github.io/sbom-demo/sbom-reports/)**
 
 A self-contained, on-premises proof of concept for **automated, multi-layer
 Software Bill of Materials (SBOM) generation**. Each application language is

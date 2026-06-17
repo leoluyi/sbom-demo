@@ -1,0 +1,8 @@
+title: Multi-Layer SBOM Generation PoC
+description: On-premises, air-gapped SBOM generation for multi-language projects
+theme: jekyll-theme-cayman
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
