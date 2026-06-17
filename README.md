@@ -10,6 +10,7 @@ with no SBOM data sent to any external API.
 
 | Layer | Tool | Format |
 |-------|------|--------|
+| React / Next.js (app) | `@cyclonedx/cyclonedx-npm` | CycloneDX JSON |
 | Node.js (app) | `@cyclonedx/cyclonedx-npm` | CycloneDX JSON |
 | Go (app) | `cyclonedx-gomod` | CycloneDX JSON |
 | Java (app) | `cyclonedx-maven-plugin` | CycloneDX JSON |
@@ -22,6 +23,7 @@ with no SBOM data sent to any external API.
 flowchart TD
     subgraph src["poc-app Source Code"]
         direction LR
+        nextjs["React / Next.js<br/>(axios, zustand)"]
         node["Node.js<br/>(express, lodash)"]
         go["Go<br/>(net/http, uuid)"]
         java["Java<br/>(guava, slf4j)"]
@@ -37,6 +39,7 @@ flowchart TD
 
     subgraph gen["SBOM Generation (local Docker, air-gap ready)"]
         direction LR
+        g0["cyclonedx-npm<br/>(frontend)"]
         g1["cyclonedx-npm"]
         g2["cyclonedx-gomod"]
         g3["cyclonedx-maven"]
@@ -46,6 +49,7 @@ flowchart TD
 
     subgraph out["sbom-outputs/"]
         direction LR
+        o0["nextjs-frontend<br/>.cdx.json"]
         o1["node-backend<br/>.cdx.json"]
         o2["go-service<br/>.cdx.json"]
         o3["java-service<br/>.cdx.json"]
@@ -53,6 +57,7 @@ flowchart TD
         o5["container-os<br/>.spdx.json"]
     end
 
+    nextjs --> g0 --> o0
     node --> g1 --> o1
     go --> g2 --> o2
     java --> g3 --> o3
@@ -76,11 +81,10 @@ operating-system layers and validated for regulatory compliance.
 
 | # | Objective | Outcome | Evidence |
 |---|------|---------|----------|
-| 1 | **Multi-language mock project** — Node.js, Go, Java, Python + a multi-stage container image | Met | [docs/architecture.md](docs/architecture.md) |
-| 2 | **On-prem, multi-layer SBOM generation** — per-language CycloneDX (app) + syft SPDX (OS), no external API | Met | 5 artifacts, see [Results](#results) |
+| 1 | **Multi-language mock project** — React/Next.js, Node.js, Go, Java, Python + a multi-stage container image | Met | [docs/architecture.md](docs/architecture.md) |
+| 2 | **On-prem, multi-layer SBOM generation** — per-language CycloneDX (app) + syft SPDX (OS), no external API | Met | 6 artifacts, see [Results](#results) |
 | 3 | **Compliance validation & extraction** — verify Author / Name / Version / License; count deps per layer | Met | all PASS, see [Results](#results) |
 | 4 | **Air-gapped SBOM generation & license extraction** — all license data derived from local package metadata (package.json / POM / METADATA / image filesystem), no external license API required; packages obtained via local registry mirrors | Met | App layer 100% coverage; OS layer 293/297 `licenseDeclared` (4 missing are app binaries, not third-party deps) |
-| 5 | **Documentation** — how to run, prerequisites, reading the logs | Met | [docs/](docs/) |
 
 ## Quickstart
 
@@ -106,6 +110,7 @@ compliance fields checked: **Author, Component Name, Version, License**.
 
 | Artifact | Layer | Generator | Components | License coverage | Status |
 |----------|-------|-----------|-----------:|-----------------:|:------:|
+| `nextjs-frontend.cdx.json` | React / Next.js app | cyclonedx-npm | 50 | 100% | PASS |
 | `node-backend.cdx.json`   | Node.js app | cyclonedx-npm   | 68  | 100% | PASS |
 | `go-service.cdx.json`     | Go app      | cyclonedx-gomod | 1   | 100% | PASS |
 | `java-service.cdx.json`   | Java app    | cyclonedx-maven | 8   | 100% | PASS |
@@ -114,17 +119,17 @@ compliance fields checked: **Author, Component Name, Version, License**.
 
 | Dependency totals by layer | Count |
 |----------------------------|------:|
-| Application components (CycloneDX) | 89 |
+| Application components (CycloneDX) | 139 |
 | OS / container packages (SPDX)     | 297 |
-| **Combined**                       | **386** |
+| **Combined**                       | **436** |
 
 ## Key conclusions
 
-- **Multi-layer separation works as intended.** Application dependencies (89,
+- **Multi-layer separation works as intended.** Application dependencies (139,
   via CycloneDX generators) and OS packages (297, via syft on the image) are
   inventoried independently and are clearly distinguishable.
 - **Native CycloneDX generators give complete, license-rich application SBOMs**
-  — 100% Author/Name/Version/License coverage on all four language layers,
+  — 100% Author/Name/Version/License coverage on all five language layers,
   resolved locally without any external SBOM API.
 - **Fully on-premises and reproducible.** Every generator runs as a pinned
   Docker container; the only network access is to package registries, which an
