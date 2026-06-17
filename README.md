@@ -16,6 +16,58 @@ with no SBOM data sent to any external API.
 | Python (app) | `cyclonedx-py` | CycloneDX JSON |
 | OS / container | `syft` | SPDX JSON |
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph src["poc-app Source Code"]
+        direction LR
+        node["Node.js<br/>(express, lodash)"]
+        go["Go<br/>(net/http, uuid)"]
+        java["Java<br/>(guava, slf4j)"]
+        python["Python<br/>(flask, requests)"]
+    end
+
+    subgraph img["Container Image — node:20-alpine"]
+        direction LR
+        alpine["Alpine OS<br/>apk / musl packages"]
+        gobin["Go binary"]
+        nodeapp["Node.js app<br/>+ node_modules"]
+    end
+
+    subgraph gen["SBOM Generation (local Docker, air-gap ready)"]
+        direction LR
+        g1["cyclonedx-npm"]
+        g2["cyclonedx-gomod"]
+        g3["cyclonedx-maven"]
+        g4["cyclonedx-py"]
+        g5["syft"]
+    end
+
+    subgraph out["sbom-outputs/"]
+        direction LR
+        o1["node-backend<br/>.cdx.json"]
+        o2["go-service<br/>.cdx.json"]
+        o3["java-service<br/>.cdx.json"]
+        o4["python-service<br/>.cdx.json"]
+        o5["container-os<br/>.spdx.json"]
+    end
+
+    node --> g1 --> o1
+    go --> g2 --> o2
+    java --> g3 --> o3
+    python --> g4 --> o4
+    img --> g5 --> o5
+
+    out --> validate["validate-sbom.py<br/>NTIA Compliance Gate"]
+    out --> render["render-sbom.py<br/>HTML Reports"]
+
+    style src fill:#e8f4fd,stroke:#2b6cb0
+    style img fill:#fef3e2,stroke:#9a6700
+    style gen fill:#f0f0f0,stroke:#5c6773
+    style out fill:#e6f4ec,stroke:#1f7a4d
+```
+
 ## Objectives
 
 The PoC set out to demonstrate, entirely on a local machine, that a

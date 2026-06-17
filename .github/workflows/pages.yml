@@ -8,6 +8,7 @@ on:
       - 'docs/**'
       - 'sbom-outputs/html/**'
       - '_config.yml'
+      - '_includes/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -42,8 +43,9 @@ jobs:
           # SBOM HTML reports (static, served as-is)
           cp -r sbom-outputs/html/* _site_src/sbom-reports/
 
-          # Jekyll config
+          # Jekyll config + includes
           cp _config.yml _site_src/
+          cp -r _includes _site_src/
 
       - uses: actions/configure-pages@v5
 
