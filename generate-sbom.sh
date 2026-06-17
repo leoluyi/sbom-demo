@@ -9,6 +9,7 @@
 #   Layer            Tool                                  Output
 #   ---------------- ------------------------------------- --------------------------
 #   Node.js  (app)   @cyclonedx/cyclonedx-npm              node-backend.cdx.json
+#   Next.js  (app)   @cyclonedx/cyclonedx-npm              nextjs-frontend.cdx.json
 #   Go       (app)   cyclonedx-gomod                       go-service.cdx.json
 #   Java     (app)   cyclonedx-maven-plugin                java-service.cdx.json
 #   Python   (app)   cyclonedx-py (cyclonedx-bom)          python-service.cdx.json
@@ -58,6 +59,7 @@ NODE_SBOM="${OUTPUT_DIR}/node-backend.cdx.json"
 GO_SBOM="${OUTPUT_DIR}/go-service.cdx.json"
 JAVA_SBOM="${OUTPUT_DIR}/java-service.cdx.json"
 PYTHON_SBOM="${OUTPUT_DIR}/python-service.cdx.json"
+FRONTEND_SBOM="${OUTPUT_DIR}/nextjs-frontend.cdx.json"
 OS_SBOM="${OUTPUT_DIR}/container-os.spdx.json"
 
 HTML_DIR="${OUTPUT_DIR}/html"
@@ -86,7 +88,7 @@ preflight() {
   command -v docker >/dev/null 2>&1 || die "docker is required but not found on PATH"
   command -v jq >/dev/null 2>&1 || die "jq is required but not found on PATH"
   docker info >/dev/null 2>&1 || die "docker daemon is not reachable (is Docker running?)"
-  for d in backend service java-service python-service; do
+  for d in backend frontend service java-service python-service; do
     [ -d "${APP_DIR}/${d}" ] || die "missing ${APP_DIR}/${d}"
   done
   mkdir -p "${OUTPUT_DIR}"
@@ -128,6 +130,21 @@ npx --yes "@cyclonedx/cyclonedx-npm@${VER}" \
 EOSH
   cp "${stage}/out.json" "${NODE_SBOM}"
   finalize_app_sbom "${NODE_SBOM}" "poc-app-backend"
+}
+
+generate_frontend_sbom() {
+  log "Next.js  -> cyclonedx-npm (frontend)"
+  local stage; stage="$(mktemp -d)"; STAGES+=("${stage}")
+  cp "${APP_DIR}/frontend/package.json" "${APP_DIR}/frontend/package-lock.json" "${stage}/"
+  docker run --rm -i -e VER="${CYCLONEDX_NPM_VERSION}" -v "${stage}:/work" -w /work "${NODE_IMAGE}" sh -s <<'EOSH' \
+    || die "cyclonedx-npm (frontend) failed"
+set -e
+npm ci --omit=dev --no-audit --no-fund >/dev/null 2>&1
+npx --yes "@cyclonedx/cyclonedx-npm@${VER}" \
+  --omit dev --spec-version 1.6 --output-format JSON --output-file /work/out.json >/dev/null 2>&1
+EOSH
+  cp "${stage}/out.json" "${FRONTEND_SBOM}"
+  finalize_app_sbom "${FRONTEND_SBOM}" "poc-app-frontend"
 }
 
 generate_go_sbom() {
@@ -245,6 +262,7 @@ main() {
   preflight
   build_image
   generate_node_sbom
+  generate_frontend_sbom
   generate_go_sbom
   generate_java_sbom
   generate_python_sbom
